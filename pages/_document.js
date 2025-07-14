@@ -4,13 +4,17 @@ export default function Document() {
   return (
     <Html lang="es">
       <Head>
-        <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
+        {/* Google Font: Inter */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      <body className="antialiased">
+      <body className="font-sans">
         <Main />
         <NextScript />
       </body>
     </Html>
   );
 }
+

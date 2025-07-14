@@ -1,5 +1,7 @@
 import Head from "next/head";
 import { useState } from "react";
+import { Mail, PhoneCall, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [mensaje, setMensaje] = useState("");
@@ -12,29 +14,21 @@ export default function Home() {
     const consulta = e.target.mensaje.value.trim();
     const honeypot = e.target._honey.value;
 
-    // 1. Honeypot: evita bots
     if (honeypot !== "") {
       alert("Detección de actividad sospechosa. Formulario bloqueado.");
       return;
     }
 
-    // 2. Validaciones básicas
     if (!nombre || !email || !consulta) {
       alert("Por favor, completa todos los campos.");
       return;
     }
 
-    // 3. Validación estricta de email
-    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const dominiosProhibidos = ["mailinator.com", "test.com", "fake.com", "aaa.com", "tempmail.com"];
-    const dominioEmail = email.split("@")[1];
-
-    if (!emailValido || dominiosProhibidos.includes(dominioEmail)) {
-      alert("Correo electrónico no válido o no aceptado.");
+    if (!email.includes("@") || email.length < 6) {
+      alert("El correo electrónico parece inválido.");
       return;
     }
 
-    // 4. Anti-spam por frecuencia
     const ultimoEnvio = localStorage.getItem("ultimo_envio");
     const ahora = Date.now();
 
@@ -43,7 +37,6 @@ export default function Home() {
       return;
     }
 
-    // 5. Guardar y enviar
     localStorage.setItem("ultimo_envio", ahora.toString());
     setMensaje("✅ Enviado correctamente. ¡Gracias por tu interés!");
     e.target.submit();
@@ -52,79 +45,104 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Más Ventas, Menos Reuniones | Automatiza tu Proceso Comercial</title>
-        <meta
-          name="description"
-          content="Sistema de ventas asincrónicas para empresas que quieren escalar sin videollamadas. Automatización, eficiencia y validación antifraude con SHILLBUSTER."
-        />
+        <title>Ventas Asincrónicas | Automatiza tu proceso</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <main className="min-h-screen bg-gray-100 text-gray-900 p-8">
-        <section className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
-          <h1 className="text-4xl font-bold mb-4">Sistema de Ventas Asincrónicas</h1>
-          <p className="mb-6">
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-blue-100 px-4 py-12 font-sans">
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-4xl bg-white p-10 rounded-3xl shadow-2xl"
+        >
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center text-gray-800 mb-4">
+            Sistema de Ventas Asincrónicas
+          </h1>
+
+          <p className="text-center text-gray-600 text-lg md:text-xl mb-6">
             Bienvenido. Este es un sistema pensado para presentar servicios o productos sin presión, sin videollamadas y sin reuniones.
           </p>
 
-          <h2 className="text-2xl font-semibold mb-2">¿Qué es esto?</h2>
-          <p className="mb-4">
-            Es una página que funciona sola: explica lo que ofrezco, responde preguntas comunes y te permite decidir si quieres saber más… cuando tú quieras.
-          </p>
+          <div className="flex justify-center gap-4 text-gray-500 text-2xl mb-6">
+            <PhoneCall />
+            <Mail />
+            <ShieldCheck />
+          </div>
 
-          <h2 className="text-2xl font-semibold mb-2">¿Qué incluye?</h2>
-          <ul className="list-disc pl-5 mb-4">
-            <li>Un sistema de ventas sin llamadas</li>
-            <li>Formulario de interés asincrónico</li>
-            <li>Mecanismo antifraude (SHILLBUSTER)</li>
-          </ul>
+          <div className="text-left text-gray-700 space-y-6 text-lg mb-10">
+            <div>
+              <h2 className="text-2xl font-semibold mb-1">¿Qué es esto?</h2>
+              <p>
+                Es una página que funciona sola: explica lo que ofrezco, responde preguntas comunes y te permite decidir si quieres saber más… cuando tú quieras.
+              </p>
+            </div>
 
-          <h2 className="text-2xl font-semibold mb-2">¿Quieres saber más?</h2>
-          <p className="mb-4">
-            Rellena el siguiente formulario y me pondré en contacto contigo:
-          </p>
+            <div>
+              <h2 className="text-2xl font-semibold mb-1">¿Qué incluye?</h2>
+              <ul className="list-disc list-inside pl-2">
+                <li>Un sistema de ventas sin llamadas</li>
+                <li>Formulario de interés asincrónico</li>
+                <li>Mecanismo antifraude (SHILLBUSTER)</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-semibold mb-1">¿Quieres saber más?</h2>
+              <p>
+                Rellena el siguiente formulario y me pondré en contacto contigo:
+              </p>
+            </div>
+          </div>
 
           {mensaje && (
-            <p className="text-green-600 font-semibold mb-4">{mensaje}</p>
+            <p className="text-green-600 text-center font-medium mb-4">
+              {mensaje}
+            </p>
           )}
 
           <form
             onSubmit={manejarEnvio}
             action="https://formsubmit.co/moracanopablo@gmail.com"
             method="POST"
-            className="space-y-4"
+            className="space-y-5"
           >
-            {/* Honeypot para bots */}
-            <input type="text" name="_honey" style={{ display: "none" }} />
+            <input type="text" name="_honey" className="hidden" />
 
             <input
               type="text"
               name="nombre"
               placeholder="Tu nombre"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
               required
             />
             <input
               type="email"
               name="email"
               placeholder="Tu correo electrónico"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
               required
             />
             <textarea
               name="mensaje"
+              rows="4"
               placeholder="¿Qué te interesa saber?"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-lg"
               required
-            />
+            ></textarea>
+
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all text-lg shadow-md"
             >
               Enviar
             </button>
           </form>
-        </section>
+        </motion.section>
       </main>
     </>
   );
